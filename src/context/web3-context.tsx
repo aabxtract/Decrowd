@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useState, useEffect, ReactNode } from 'react';
@@ -77,7 +78,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         title: 'Success!',
         description: 'Your campaign has been created.',
       });
-      router.push('/');
+      router.push('/campaigns');
     } catch(e) {
       toast({ variant: 'destructive', title: 'Error', description: 'Failed to create campaign.' });
     }

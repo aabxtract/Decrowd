@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,14 @@ export default function Header() {
             <Icons.logo className="h-6 w-6 text-primary" />
             <span className="inline-block font-bold text-xl">DeCrowd</span>
           </Link>
+          <nav className="hidden gap-6 md:flex">
+             <Link
+                href="/campaigns"
+                className="flex items-center text-lg font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
+              >
+                Campaigns
+              </Link>
+          </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
