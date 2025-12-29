@@ -1,8 +1,38 @@
-import type { Campaign } from './types';
+
+import type { Campaign, NFTBadge, EarnedBadge } from './types';
 import { addDays } from 'date-fns';
 
 export const MOCK_USER_ADDRESS = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B';
 export const MOCK_CREATOR_ADDRESS = '0x1Db3439a222C519ab44bb1144fC28167b4Fa6EE6';
+
+export const AVAILABLE_BADGES: NFTBadge[] = [
+    {
+        id: 'pioneer',
+        name: 'Pioneer Backer',
+        description: 'Awarded for being one of the first 10 backers of a campaign.',
+        icon: 'Rocket'
+    },
+    {
+        id: 'top-contributor',
+        name: 'Top Contributor',
+        description: 'Awarded for being the top contributor to a campaign.',
+        icon: 'Crown'
+    },
+     {
+        id: 'generous-supporter',
+        name: 'Generous Supporter',
+        description: 'Awarded for contributing more than 10 ETH to a campaign.',
+        icon: 'Gem'
+    }
+]
+
+export const MOCK_EARNED_BADGES: EarnedBadge[] = [
+    {
+        badge: AVAILABLE_BADGES.find(b => b.id === 'pioneer')!,
+        campaignTitle: 'Aqua-Pure: Clean Water for Everyone',
+        timestamp: new Date().getTime()
+    }
+]
 
 export const MOCK_CAMPAIGNS: Campaign[] = [
   {

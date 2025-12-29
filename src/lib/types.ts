@@ -1,9 +1,24 @@
+
 export interface Contributor {
   address: string;
   amount: number;
 }
 
 export type CampaignState = 'fundraising' | 'successful' | 'expired';
+
+export interface NFTBadge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+}
+
+export interface EarnedBadge {
+    badge: NFTBadge;
+    campaignTitle: string;
+    timestamp: number;
+}
+
 
 export interface Campaign {
   id: number;
@@ -20,3 +35,4 @@ export interface Campaign {
 }
 
 export type CreateCampaignData = Omit<Campaign, 'id' | 'owner' | 'summary' | 'amountCollected' | 'contributors' | 'state' | 'image'>;
+

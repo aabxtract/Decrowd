@@ -2,8 +2,8 @@
 'use client';
 
 import { createContext, useState, useEffect, ReactNode } from 'react';
-import { MOCK_CAMPAIGNS, MOCK_USER_ADDRESS } from '@/lib/constants';
-import type { Campaign, CreateCampaignData } from '@/lib/types';
+import { MOCK_CAMPAIGNS, MOCK_USER_ADDRESS, AVAILABLE_BADGES, MOCK_EARNED_BADGES } from '@/lib/constants';
+import type { Campaign, CreateCampaignData, NFTBadge, EarnedBadge } from '@/lib/types';
 import { getSummary } from '@/lib/actions';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +13,7 @@ interface Web3ContextType {
   userAddress: string | null;
   campaigns: Campaign[];
   loading: boolean;
+  earnedBadges: EarnedBadge[];
   connectWallet: () => void;
   disconnectWallet: () => void;
   createCampaign: (data: CreateCampaignData) => Promise<void>;
@@ -27,6 +28,7 @@ export const Web3Context = createContext<Web3ContextType | undefined>(undefined)
 export function Web3Provider({ children }: { children: ReactNode }) {
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [earnedBadges, setEarnedBadges] = useState<EarnedBadge[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const router = useRouter();
@@ -40,6 +42,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const connectWallet = () => {
     // Simulate wallet connection
     setUserAddress(MOCK_USER_ADDRESS);
+    setEarnedBadges(MOCK_EARNED_BADGES);
     toast({
       title: 'Wallet Connected',
       description: `Connected as ${MOCK_USER_ADDRESS.slice(0, 6)}...${MOCK_USER_ADDRESS.slice(-4)}`,
@@ -48,6 +51,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
   const disconnectWallet = () => {
     setUserAddress(null);
+    setEarnedBadges([]);
     toast({ title: 'Wallet Disconnected' });
   };
 
@@ -90,9 +94,28 @@ export function Web3Provider({ children }: { children: ReactNode }) {
       return;
     }
 
+    let awardedBadge: NFTBadge | null = null;
+
     setCampaigns((prev) =>
       prev.map((campaign) => {
         if (campaign.id === campaignId) {
+          // Badge Logic
+          if (campaign.contributors.length < 10) {
+            awardedBadge = AVAILABLE_BADGES.find(b => b.id === 'pioneer')!;
+          } else if (amount > 10) {
+            awardedBadge = AVAILABLE_BADGES.find(b => b.id === 'generous-supporter')!;
+          }
+
+          if (awardedBadge) {
+              const newEarnedBadge: EarnedBadge = {
+                  badge: awardedBadge,
+                  campaignTitle: campaign.title,
+                  timestamp: new Date().getTime(),
+              };
+              setEarnedBadges(prevBadges => [...prevBadges, newEarnedBadge]);
+          }
+
+
           const newAmount = campaign.amountCollected + amount;
           return {
             ...campaign,
@@ -108,7 +131,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         variant: 'default',
         className: "bg-accent text-accent-foreground",
         title: 'Donation Successful!',
-        description: `You have successfully donated ${amount} ETH.`,
+        description: `You have successfully donated ${amount} ETH. ${awardedBadge ? `You've earned the ${awardedBadge.name} badge!` : ''}`,
       });
   };
 
@@ -140,6 +163,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     userAddress,
     campaigns,
     loading,
+    earnedBadges,
     connectWallet,
     disconnectWallet,
     createCampaign,

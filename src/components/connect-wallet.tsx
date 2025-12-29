@@ -1,3 +1,4 @@
+
 'use client';
 import { useWeb3 } from '@/hooks/use-web3';
 import { Button } from '@/components/ui/button';
@@ -6,8 +7,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, Wallet } from 'lucide-react';
+import { ChevronDown, Wallet, User } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ConnectWallet() {
   const { userAddress, connectWallet, disconnectWallet } = useWeb3();
@@ -27,6 +30,13 @@ export default function ConnectWallet() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+                <Link href="/profile">
+                    <User className="mr-2 h-4 w-4"/>
+                    My Profile
+                </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator/>
           <DropdownMenuItem onClick={disconnectWallet}>
             Disconnect
           </DropdownMenuItem>
